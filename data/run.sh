@@ -3,7 +3,7 @@ set +u
 
 WAIT_PIDS=()
 ADDON_PATH='/share/frp'
-CONFIG_PATH='/share/frp/frpc.ini'
+CONFIG_PATH='/share/frp/frpc.toml'
 
 function stop_frpc() {
     bashio::log.info "Shutdown frpc client"
@@ -28,16 +28,8 @@ if ! bashio::fs.file_exists $CONFIG_PATH; then
     bashio::exit.nok
 fi
 
-log_file=$(sed -n "/^[ \t]*\[common\]/,/\[/s/^[ \t]*log_file[ \t]*=[ \t]*//p" ${CONFIG_PATH})
-
-if [[ ! -n "${log_file}" ]]; then
-    bashio::log.info 'Please specify a path to log file in config file'
-    bashio::exit.nok
-fi
-
 cd /usr/src
-./frpc -c $CONFIG_PATH & logger $log_file & WAIT_PIDS+=($!)
-
+./frpc -c $CONFIG_PATH & WAIT_PIDS+=($!)
 
 trap "stop_frpc" SIGTERM SIGHUP
 
