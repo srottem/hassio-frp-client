@@ -28,7 +28,7 @@ if ! bashio::fs.file_exists $CONFIG_PATH; then
     bashio::exit.nok
 fi
 
-log_file=$(sed -n "/\[/s/^[ \t]*log.to[ \t]*=[ \t]*//p" ${CONFIG_PATH})
+log_file=$(sed -n "\[/s/^[ \t]*log.to[ \t]*=[ \t]*//p" ${CONFIG_PATH})
 
 if [[ ! -n "${log_file}" ]]; then
     bashio::log.info 'Please specify a path to log file in config file'
